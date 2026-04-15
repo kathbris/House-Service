@@ -1,0 +1,390 @@
+<style>/*RESET*/
+    html, body, h1, h2, h3, h4, h5, h6, img, p, ul, ol, li, a, figure, figcaption, table {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        font-weight: normal;
+        font-style: inherit;
+        font-size: 100%;
+        font-family: inherit;
+        color: inherit;
+        vertical-align: baseline;
+        line-height: 0;
+    }
+/*COLOURS*/
+
+    body h1, body h2 {
+        background-color: #007f64;
+    }
+    body h3, body a {
+        color: #007f64;
+    }
+
+    /*GENERAL*/
+    body, h1, h2, table {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box; /* Firefox */
+        -webkit-box-sizing: border-box; /* Safari */
+    }
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 80px 20px 80px;
+    }
+    h1, h2, h3, h4, h5, h6, figcaption {
+        line-height: 1;
+    }
+    h1, h3, h4, h5, h6, thead {
+        font-weight: bold;
+    }
+    h1, h2 {
+        width: 100%;
+        font-size: 16px;
+        color: #fff;
+    }
+    h1 {
+        padding: 15px 15px 10px 15px;
+        text-transform: uppercase;
+    }
+    h2 {
+        padding: 0px 15px 15px 15px;
+        font-style: italic;
+    }
+    h3, h4, h5, h6, p, a, li, figcaption, table {
+        font-size: 14px;
+    }
+    h3, h4, h5, p, li, figcaption, table {
+        color: #535557;
+    }
+    h3 {
+        text-transform: uppercase;
+    }
+    h3 {
+        width: 100%;
+        margin-top: 40px;
+        border-bottom: 2px solid;
+    }
+    h6 {
+        color: #aaabab;
+    }
+    h4, h5, h6, p, ul, ol, img {
+        margin-top: 15px;
+    }
+    ul ul, ul ol, ol ul, ol ol {
+        margin-top: 0 !important;
+    }
+    p, a, li, table {
+        line-height: 145%;
+    }
+    p#em {
+        line-height: 100%;
+        font-style:italic;
+        font-weight:bold;
+    }
+    li {
+        margin-left: 40px;
+    }
+    ul li {
+        list-style-type: square;
+    }
+    a {
+        font-weight: bold;
+    }
+    a:hover {
+        color: #aaabab !important;
+    }
+    /*IMAGES*/
+    img, figcaption {
+        display: block;
+    }
+    img.large {
+        width: 100%;
+        height: 100%;
+    }
+    img.small {
+        width: 50%;
+        height: 100%;
+    }
+    figcaption {
+        margin-top: 5px;
+        font-weight: bold;
+    }
+    /*TABLE SPECIFIC*/
+    table {
+        margin-top: 15px;
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1px solid #aaabab;
+    }
+    th, td {
+        padding: 5px;
+    }
+    /*FOOTER*/
+    p#footer {
+        width: 100%;
+        margin: 45px 0 0 0;
+        padding-top: 15px;
+        border-top: 1px solid;
+        text-align: center;
+        color: #aaabab;
+    }
+    .column {
+        float: left;
+        width: 50%;
+        }</style>
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<title>2024 Canadian House service calculation<br/></title>
+<link href="screen.css" media="screen" rel="stylesheet"/>
+</head><body id="mse">
+<h1>2024 Canadian House service calculation</h1>
+<h2>Calculate the demand for a single dwelling service, given the following information;</h2>
+<div id="calcContainer"><form action="" method="GET" name="testform">
+<button onclick="window.location.reload();">Refresh Page</button>
+<p id="above"></p>
+<p id="below"></p>
+<p id="add1"></p>
+<p id="range1"></p>
+<p id="heat1"></p>
+<p id="cooling1"></p> <p id="inter"></p>
+<p id="add2"></p>
+<p id="evc1"></p><p id="mang"></p>
+<p id="pool"></p>
+<p id="add3"></p>
+<h3>Enter the total calculated demand in W:</h3>
+<input id="calculation" name="calculation" type="number" value=""/><br/>
+<input id="button" name="button" onclick="testButton(this.form)" type="button" value="Submit"/><br/>
+<div class="row">
+<div class="column">
+<p id="answer"></p>
+</div>
+<div class="column">
+<p id="bhelp"></p>
+</div>
+</div>
+</form>
+<script>
+
+//Living Area
+var aboveGrade = randomRangeWithIncrements(60, 150, 5);
+    document.getElementById("above").innerHTML = "The above grade area is:<b> "+aboveGrade+"</b> m<sup>2</sup>";
+    var belowGrade = randomRangeWithIncrements(0, aboveGrade, 10);
+    if (belowGrade == 0){
+        document.getElementById("below").innerHTML ="";
+    }else {
+        document.getElementById("below").innerHTML ="The basement area is: <b>" +belowGrade+"</b> m<sup>2</sup>";
+    }
+    var basic = (Math.ceil((Number(aboveGrade)+Number(belowGrade)*.75)/90)-1)*1000+5000;
+    var portions = Math.ceil((Number(aboveGrade)+Number(belowGrade)*.75)/90)
+    var livingArea = (Number(aboveGrade)+Number(belowGrade)*.75);
+    var basicLogic = 'Basic Demand is <b>'+basic+' W</b><br><input id="button2" type="button" name="button" value="Basic Demand Feedback" onclick="basicHelp()"><br>';
+    function basicHelp (){
+        document.getElementById("bhelp").innerHTML = '<h3>Basic Load Feedback</h3>8-110 states that 100% of any area above grade and 75% below grade count towards the basic load.<br> Therefore to calculate the living area for 8-200 we must use ('+aboveGrade+'+'+belowGrade+'*0.75)='+livingArea+'.<br> According to 8-200 1) a) i) the first 90 m\u00B2 adds 5000 W to the basic load and ii) tells us each additional 90 m\u00B2 or portion of is an additional 1000W. '+livingArea+'/90='+Math.round((((Number(aboveGrade)+Number(belowGrade)*.75)/90)*100))/100+' we always round up giving us '+portions+' portions.';
+    }
+
+//Range Demand
+    var range = randomRangeWithIncrements(8000, 18000, 500);
+    if (range < 10000){
+        var range = 0;
+        document.getElementById("range1").innerHTML = "";
+    }
+    else{document.getElementById("range1").innerHTML = "The range is rated for: <b>"+range+" W</b>";}
+    if (range > 12000 ) {
+        var rangeDemand = Number((Number(range)-12000)*0.4+6000);
+        var rangeLogic = "The range demand is<b> "+rangeDemand+ " W </b><br>"+'<input id="button3" type="button" name="button" value="Range Demand Feedback" onclick="rangeHelp()"><br>';
+        var rangHelp = '<h3>Range Feedback</h3>According to 8-200 1) a) iv) An electric range over 12000W is calculated at 6000 W + 40% of any rating above 120000W <br>('+range+'-12000)*0.4+6000='+rangeDemand;
+    } else if (range > 1500 && range <= 12000){
+        var rangeDemand = 6000;
+        var rangeLogic = "The range demand is<b> "+rangeDemand+" W </b><br>"+'<input id="button3" type="button" name="button" value="Range Demand Feedback" onclick="rangeHelp()"><br>';
+        var rangHelp='<h3>Range Feedback</h3>According to 8-200 1) a) iv), an electric range up to 12000W adds a demand of 6000 W';
+    } else {
+        var rangeDemand = 0;
+        var rangeLogic = ""
+    }
+    function rangeHelp (){
+        document.getElementById("bhelp").innerHTML =rangHelp;
+    }
+
+//Comfort (Heating and Cooling)
+    var heat = 0;
+    if (heat == 0){
+         document.getElementById("heat1").innerHTML = "";
+    }
+    else {
+        document.getElementById("heat1").innerHTML = "Rating of electric space heat (basboard heaters): <b>"+heat+" W</b>";
+    }
+    var cooling = randomRangeWithIncrements(0, 15000, 1000);
+    if (cooling==0){
+        document.getElementById("cooling1").innerHTML = "";
+    } else{
+        document.getElementById("cooling1").innerHTML ="Air conditioning has a rating of <b>"+ cooling+" VA</b>";
+    }
+    var heatDemand = 0;
+    var heatAbove ="";
+    var comfort = Number(cooling);
+    var comfortinc ="Air conditionaing demand is <b>"+comfort+" VA </b><br>"+'<input id="button1" type="button" name="button" value="Cooling Feedback" onclick="comfortHelp()"><br>';
+    var comHelp ='<h3>Air conditioning Feedback</h3>Cooling is taken at 100% as per 8-200 1) a) iii).';
+    if (comfort == 0){
+        var comfortinc = "";
+        var comHelp = "";
+    }
+    function comfortHelp (){
+        document.getElementById("bhelp").innerHTML =comHelp;
+    }
+//EVC
+    var evc = randomRangeWithIncrements(0, 4000, 2000);
+    if (evc==0){
+      document.getElementById("evc1").innerHTML = "";
+      var evcLogic = "";
+    }else {
+     document.getElementById("evc1").innerHTML = "An electric vehicle charger is installed with a rating of <b> "+evc+" W";
+    var evcLogic = "EVC demand is<b> "+evc+" W</b>.<br>";
+    }
+    var evm = (Math.floor(Math.random() * 2));
+    if (evm == 1 && evc != 0){
+        document.getElementById("evc1").innerHTML = "An electric vehicle charger is installed with a rating of <b> "+evc+" </b>W. An electrical management system is installed";
+        var evc = 0;
+        var evcLogic = "EVC demand is "+evc+" W<br>"+'<input id="button4" type="button" name="button" value="EVC Feedback" onclick="evcHelp()"><br>';
+        var chargeHelp = '<h3>EVC Feedback</h3>As per 8-106 11), Electric vehicle charging is taken at zero with an electric management system';
+    }
+    function evcHelp (){
+        document.getElementById("bhelp").innerHTML =chargeHelp ;
+    }
+//Tankless water heat
+    var coin = randomRangeWithIncrements(1, 5, 1);
+    if (coin >= 4){
+        var wt = ['Pool Heater','Spa','Hot Tub','Tankless Water Heater'];
+        var pool = randomRangeWithIncrements(400, 3000, 100);
+        var wh = getRandomItem(wt);
+        document.getElementById("pool").innerHTML = wh+" at <b>"+pool+" W";
+        var poolLogic = 'Water heater demand is <b>'+pool+' W<br></b>'+'<input id="button5" type="button" name="button" value="Tankless Water Heater Feedback" onclick="waterHelp()"><br>';
+    } else {
+        document.getElementById("pool").innerHTML = "";
+        var pool = 0;
+        var poolLogic ="";
+    }
+    function waterHelp (){
+        document.getElementById("bhelp").innerHTML ='<h3>Tankless Water Feedback</h3>8-200 1) a) v) states Any tankless water heater or heater for a pool, spa, hot tub etc. is taken at 100%';
+    }
+
+//Addtional loads
+    var addLoads = ['','',"","","","","","","Virtual Presence Machine","Hydraulic Bender","Deep Fryer","Model Train Set","Recording Studio","Kiln","Dryer","Hot Water Tank","TV","Security System","Theatre System","Arc Welder","Massage Chair","Car Lift","Exercise Equipment","Grinder","Chair lift","Pet hotel"];
+    var addLoad1 = getRandomItem(addLoads);
+    var add1 = randomRangeWithIncrements(1400, 2500, 100);
+    var addLoad2 = getRandomItem(addLoads);
+    var add2 = randomRangeWithIncrements(1400, 2500, 100);
+    var addLoad3 = getRandomItem(addLoads);
+    var add3 = randomRangeWithIncrements(1400, 2500, 100);
+    if (addLoad1 == ""){
+        var addLoad11 = "";
+        var add1 = 0;
+    } else {
+        var addLoad11 = addLoad1+" at <b>"+add1+" W</b><br>";
+    }
+    if (addLoad2 == ""){
+        var addLoad12 = "";
+        var add2 =0;
+    } else {
+        var addLoad12 = addLoad2+" at <b>"+add2+" W</b><br>";
+    }
+    if (addLoad3 == ""){
+        var addLoad13 = "";
+        var add3=0;
+    } else {
+        var addLoad13 = addLoad3+" at <b>"+add3+" W</b><br>";
+    }
+    if (add1 <=1500){
+        var add1 = 0;
+    }
+    if (add2 <=1500){
+        var add2 = 0;
+    }
+    if (add3 <=1500){
+        var add3 = 0;
+    }
+    document.getElementById("add1").innerHTML = addLoad11;
+    document.getElementById("add2").innerHTML = addLoad12;
+    document.getElementById("add3").innerHTML = addLoad13;
+    var noRange = "<h3>Additional Load Feedback</h3>There is no electric range, therefore 8-200 1) a) vii) B) states we take any additional load greater then 1500 W up to 6000 W at 100%";
+    var add=add1+add2+add3;
+    if (range < 1500 && add > 6000){
+        var add = (add-6000)/4+6000;
+        var noRange = "<h3>Additional Load Feedback</h3>There is no electric range therefore 8-200 1) a) vii) B) states add all additonal loads <b>greater</b> than 1500 W. We then take the first 6000 W at 100% and the rest at 25%. <br>("+add+"-6000)*.25+6000";
+    } else if (range > 1500){
+        var add = add/4;
+        var noRange = "<h3>Additional Load Feedback</h3>There is an electric range therefore we take all loads larger then 1500 W at 25% as per 8-200 1) a) vii) A)";
+    }
+    function addHelp (){
+        document.getElementById("bhelp").innerHTML =noRange;
+    }
+//Calculated Demand
+    var calcDemand = Number(basic) + Number(rangeDemand) + Number(comfort) + Number(evc) + Number(add)+Number(pool);
+    var helpNeeded ="";
+    if (aboveGrade > 80){
+        var totalDemand = Math.max(24000,calcDemand);
+        if (calcDemand < 24000){
+            var totalHelp = 'We must compare the calculation value from item 8-200 1) a) and compare it to item b) and take the largest value as our calculated demand, based on the above grade living area, in this case 80m\u00B2 or more. ';
+            var helpNeeded ='<input id="button7" type="button" name="button" value="Help with calculated demand" onclick="totHelp()">';
+        }
+    } else {
+        var totalDemand = Math.max(14400,calcDemand);
+        if (calcDemand < 14400){
+            var totalHelp = 'We must compare the calculation value from item 8-200 1) a) and compare it to item b) and take the largest value as our calculated demand, based on the above grade living area, In this case 80m\u00B2 or less.';
+            var helpNeeded ='<input id="button7" type="button" name="button" value="Help with calculated demand" onclick="totHelp()">';
+        }
+    }
+    var ma=Math.round(totalDemand/240*10)/10;  
+    function testButton (form){
+        var answer = Number(form.calculation.value)
+        if (answer==totalDemand){
+            document.getElementById("answer").innerHTML = "<h3>Correct</h3>";
+        }
+        else {
+            document.getElementById("answer").innerHTML = "<h3>Incorrect</h3>"+basicLogic+rangeLogic+comfortinc+evcLogic+poolLogic+"Additional Load is <b>"+add+" W </b><br>"+'<input id="button6" type="button" name="button" value="Additional Load Feedback" onclick="addHelp()">.<br>The Calculated Demand is <b>'+totalDemand+ " W </b>and a minimum amapcity of <b>"+ma+" amps</b><br>"+helpNeeded;
+        }
+    }
+    function totHelp(){
+        document.getElementById("bhelp").innerHTML ='<h3>Calculated Demand Feedback</h3>The total calculation as per 8-200 1) a) is '+calcDemand+' W.<br> '+totalHelp;
+    }
+    document.getElementById("answer").innerHTML = ""
+    var input = document.getElementById("add");
+    input.addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        document.getElementById("button").click();
+      }
+    });
+    function getRandomItem(arr) {
+
+        // get random index value
+        const randomIndex = Math.floor(Math.random() * arr.length);
+
+        // get random item
+        const item = arr[randomIndex];
+        return item;
+}
+    function randomRangeWithIncrements(min, max, inc) {
+        min = min || 0;
+        inc = inc || 1;
+        if(!max) { return new Error('need to define a max');}
+        return Math.floor(Math.random() * (max - min) / inc) * inc + min;
+    }
+
+</script>
+</div><button onclick="refreshCalc()">Refresh Page</button><script>
+function refreshCalc() {
+  const container = document.getElementById('calcContainer');
+  container.innerHTML = ''; // Clear existing content
+
+  // Re-load or re-render the content
+  container.innerHTML = `
+    <h3>Calculate the demand for a single dwelling service</h3>
+    <label for="demand">Enter the total calculated demand in W:</label>
+    <input type="number" id="demand" name="demand">
+  `;
+}
+</script></body></html>
